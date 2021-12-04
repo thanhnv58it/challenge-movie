@@ -4,5 +4,10 @@
 <dict>
 	<key>Movie API key</key>
 	<string>$(MOVIE_API_KEY)</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

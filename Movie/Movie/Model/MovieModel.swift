@@ -28,6 +28,10 @@ struct MovieModel: Codable {
     let type: String
     let poster: String
     
+    var posterURL: URL? {
+        return URL(string: poster)
+    }
+    
     enum CodingKeys: String, CodingKey {
         case title = "Title"
         case year = "Year"
