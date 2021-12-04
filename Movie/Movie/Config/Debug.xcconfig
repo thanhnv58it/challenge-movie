@@ -1,0 +1,11 @@
+//
+//  Debug.xcconfig
+//  Movie
+//
+//  Created by Thành Ngô Văn on 04/12/2021.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+MOVIE_API_KEY = b9bd48a6
