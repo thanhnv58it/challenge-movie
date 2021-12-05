@@ -12,15 +12,14 @@ struct Request {
     
     var urlSession = URLSession.shared
     
-    static func searchMovie(input: SearchMovieInput, complete: @escaping ([MovieModel])->()) {
+    static func sendRequest<T: Decodable, F: Encodable>(input: F, outputType: T.Type, complete: @escaping (T?, Error?)->()) {
+        
         AF.request(URLs.DOMAIN, parameters: input)
             .validate()
-            .responseDecodable(of: SearchMovieResult.self) { response in
-                guard let searchResult = response.value else {
-                    return
-                }
-                complete(searchResult.search)
+            .responseDecodable(of: T.self) { response in
+                print(response.error as Any)
+                complete(response.value, response.error)
             }
     }
-    
+
 }

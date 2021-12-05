@@ -41,32 +41,55 @@ class MovieListViewController: UIViewController {
         let buttonBar = UIBarButtonItem(image: UIImage(systemName: "person.circle"), style: .plain, target: nil, action: nil)
         buttonBar.tintColor = .white
         navigationItem.rightBarButtonItem = buttonBar
+        navigationItem.titleView = searchBar
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
     }
     
     private func bindRx() {
-        _ = searchBar.rx.text.orEmpty
-            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
-            .distinctUntilChanged()
-            .filter({ query in
-                return !query.isEmpty
-            })
-            .subscribe { [weak self] (query) in
-                self?.viewModel.searchMovie(query: query)
-            }.disposed(by: disposeBag)
+//        _ = searchBar.rx.text.orEmpty
+//            .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
+//            .distinctUntilChanged()
+//            .filter({ query in
+//                return !query.isEmpty
+//            })
+//            .subscribe { [weak self] (query) in
+//                self?.viewModel.searchMovie(query: query)
+//            }.disposed(by: disposeBag)
         
         viewModel.relayLoading.bind { [weak self] isLoading in
             self?.searchBar.isLoading = isLoading
         }.disposed(by: disposeBag)
         
         viewModel.relaySearchData.bind { [weak self] _ in
-            self?.collectionView.reloadData()
+            guard let self = self else { return }
+            self.collectionView.reloadData()
+            if (self.viewModel.isFirstPage()) {
+                self.collectionView.setContentOffset(CGPoint.zero, animated: false)
+            }
+        }.disposed(by: disposeBag)
+        
+        viewModel.relayError.bind { [weak self] (message) in
+            guard let message = message, !message.isEmpty else {
+                return
+            }
+            self?.showErrorAlert(message: message)
         }.disposed(by: disposeBag)
     }
     
 }
 
 extension MovieListViewController: UISearchBarDelegate {
-    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, !query.isEmpty else {
+            return
+        }
+        viewModel.searchMovie(query: query)
+        searchBar.resignFirstResponder()
+    }
 }
 
 extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -83,23 +106,12 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
         flowLayout.sectionInset.right = 16
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 56)
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        searchBar.resignFirstResponder()
     }
-    
+        
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.relaySearchData.value.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerCellId", for: indexPath)
-        header.addSubview(searchBar)
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.leftAnchor.constraint(equalTo: header.leftAnchor).isActive = true
-        searchBar.rightAnchor.constraint(equalTo: header.rightAnchor).isActive = true
-        searchBar.topAnchor.constraint(equalTo: header.topAnchor).isActive = true
-        searchBar.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -16).isActive = true
-        return header
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -128,5 +140,12 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
             return
         }
         viewModel.loadMoreData()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movie = viewModel.relaySearchData.value[indexPath.row]
+        let details = MovieDetailsViewController(nibName: MovieDetailsViewController.nibName, bundle: nil)
+        details.viewModel = MovieDetailsViewModel(movie: movie)
+        navigationController?.pushViewController(details, animated: true)
     }
 }

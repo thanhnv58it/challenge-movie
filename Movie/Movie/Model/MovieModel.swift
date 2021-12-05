@@ -10,8 +10,9 @@ import Foundation
 
 // MARK: - MovieDetails
 struct SearchMovieResult: Codable {
-    let search: [MovieModel]
-    let totalResults, response: String
+    let search: [MovieModel]?
+    let totalResults: String?
+    let response: String
 
     enum CodingKeys: String, CodingKey {
         case search = "Search"
