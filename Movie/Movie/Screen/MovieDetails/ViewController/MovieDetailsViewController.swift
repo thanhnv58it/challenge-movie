@@ -11,8 +11,8 @@ import RxSwift
 
 class MovieDetailsViewController: UIViewController {
     
-    @IBOutlet weak var stackViewContent: UIStackView!
-    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var backButton: UIButton!
+
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imgBackground: UIImageView!
     @IBOutlet weak var imgPoster: UIImageView!
@@ -20,7 +20,8 @@ class MovieDetailsViewController: UIViewController {
     @IBOutlet weak var lbMovieYear: UILabel!
     @IBOutlet weak var bannerStackViewTopConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var stackViewContent: UIStackView!
     @IBOutlet weak var lbCategory: UILabel!
     @IBOutlet weak var lbPlot: UILabel!
     @IBOutlet weak var lbDirector: UILabel!
@@ -40,22 +41,23 @@ class MovieDetailsViewController: UIViewController {
         setupView()
         displayDefaultData()
         bindRxData()
+        viewModel.getMovieDetails()
     }
     
     private func setupView() {
+        self.navigationItem.hidesBackButton = true
         navigationController?.navigationBar.isHidden = true
         bannerStackViewTopConstraint.constant = 16 + getStatusBarHeight()
         backButton.layer.cornerRadius = 22
         backButton.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         backButton.setTitle(nil, for: .normal)
         backButton.setTitle(nil, for: .selected)
-        
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
     }
     
     private func displayDefaultData() {
         let movie = viewModel.movie
         lbMovieTitle.text = movie.title
-        lbMovieYear.text = ""
         imgPoster.kf.setImage(with: movie.posterURL)
         
         let processor = BlurImageProcessor(blurRadius: 4)
@@ -70,7 +72,7 @@ class MovieDetailsViewController: UIViewController {
         
         viewModel.relayMovieDetails.bind { [weak self] (detail) in
             guard let self = self else { return }
-            self.lbMovieYear.text = detail?.year
+            self.lbMovieYear.text = detail?.year ?? ""
             self.lbCategory.text = detail?.genre
             self.lbPlot.text = detail?.plot
             self.lbDirector.text = detail?.director

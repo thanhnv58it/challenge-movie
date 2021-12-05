@@ -100,6 +100,7 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         
         let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         flowLayout.sectionInset.left = 16

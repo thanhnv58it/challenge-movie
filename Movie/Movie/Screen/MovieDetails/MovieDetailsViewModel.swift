@@ -19,7 +19,6 @@ class MovieDetailsViewModel {
     
     init(movie: MovieModel) {
         self.movie = movie
-        getMovieDetails()
     }
     
     func getMovieDetails() {

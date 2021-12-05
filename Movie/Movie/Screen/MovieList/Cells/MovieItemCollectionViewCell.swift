@@ -23,7 +23,7 @@ class MovieItemCollectionViewCell: UICollectionViewCell {
     
     private func setupView() {
         wrapTitleView.backgroundColor = .clear
-        wrapView.layer.cornerRadius = 6;
+        wrapView.layer.cornerRadius = 6
     }
 
     func displayData(movie: MovieModel) {
