@@ -25,7 +25,9 @@
                 <outlet property="lbRateValue" destination="dXX-NQ-Ft2" id="9ZZ-Pr-leI"/>
                 <outlet property="lbVoteValue" destination="5AX-aP-L5C" id="Sru-ER-g5q"/>
                 <outlet property="lbWriter" destination="Pe1-Ob-bAl" id="Lfw-wA-HAr"/>
+                <outlet property="loadingIndicator" destination="Jq6-si-2ty" id="Bkj-lu-Oxo"/>
                 <outlet property="scrollView" destination="zYa-np-ap4" id="Mnf-1v-9rE"/>
+                <outlet property="stackViewContent" destination="EeI-DV-9Jw" id="VQv-XM-dDE"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -90,6 +92,9 @@
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FQE-5h-Lkq">
                                     <rect key="frame" x="0.0" y="313.5" width="414" height="393"/>
                                     <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="Jq6-si-2ty">
+                                            <rect key="frame" x="197" y="88.5" width="20" height="20"/>
+                                        </activityIndicatorView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="EeI-DV-9Jw">
                                             <rect key="frame" x="16" y="16" width="382" height="361"/>
                                             <subviews>
@@ -257,6 +262,8 @@
                                         <constraint firstAttribute="bottom" secondItem="EeI-DV-9Jw" secondAttribute="bottom" constant="16" id="Q1f-HU-oaO"/>
                                         <constraint firstItem="EeI-DV-9Jw" firstAttribute="top" secondItem="FQE-5h-Lkq" secondAttribute="top" constant="16" id="QKH-qN-8Cm"/>
                                         <constraint firstItem="EeI-DV-9Jw" firstAttribute="leading" secondItem="FQE-5h-Lkq" secondAttribute="leading" constant="16" id="UV4-F8-Ksw"/>
+                                        <constraint firstItem="Jq6-si-2ty" firstAttribute="centerX" secondItem="FQE-5h-Lkq" secondAttribute="centerX" id="riO-m5-fW7"/>
+                                        <constraint firstItem="Jq6-si-2ty" firstAttribute="centerY" secondItem="FQE-5h-Lkq" secondAttribute="centerY" multiplier="0.5" id="ydm-Wh-0BJ"/>
                                     </constraints>
                                 </view>
                             </subviews>
@@ -310,7 +317,7 @@
         </view>
     </objects>
     <resources>
-        <image name="back" width="32" height="32"/>
+        <image name="back" width="21.333333969116211" height="21.333333969116211"/>
         <image name="image_placeholder" width="256" height="256"/>
         <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">

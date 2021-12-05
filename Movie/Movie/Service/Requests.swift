@@ -17,7 +17,9 @@ struct Request {
         AF.request(URLs.DOMAIN, parameters: input)
             .validate()
             .responseDecodable(of: T.self) { response in
-                print(response.error as Any)
+                if let error = response.error {
+                    print(error)
+                }
                 complete(response.value, response.error)
             }
     }

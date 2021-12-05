@@ -23,11 +23,12 @@ class MovieDetailsViewModel {
     }
     
     func getMovieDetails() {
+        relayLoading.accept(true)
         let input = GetMovieDetailsInput(id: movie.imdbID)
         Request.sendRequest(input: input, outputType: MovieDetails.self) { [weak self] (details, error) in
+            self?.relayLoading.accept(false)
             self?.relayMovieDetails.accept(details)
             self?.relayError.accept(error?.localizedDescription)
-            self?.relayLoading.accept(false)
         }
     }
 }

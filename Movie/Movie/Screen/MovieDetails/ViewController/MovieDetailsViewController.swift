@@ -10,7 +10,9 @@ import Kingfisher
 import RxSwift
 
 class MovieDetailsViewController: UIViewController {
-
+    
+    @IBOutlet weak var stackViewContent: UIStackView!
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imgBackground: UIImageView!
     @IBOutlet weak var imgPoster: UIImageView!
@@ -34,12 +36,12 @@ class MovieDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupView()
         displayDefaultData()
-        bindDetailsData()
+        bindRxData()
     }
-
+    
     private func setupView() {
         navigationController?.navigationBar.isHidden = true
         bannerStackViewTopConstraint.constant = 16 + getStatusBarHeight()
@@ -47,7 +49,7 @@ class MovieDetailsViewController: UIViewController {
         backButton.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         backButton.setTitle(nil, for: .normal)
         backButton.setTitle(nil, for: .selected)
-
+        
     }
     
     private func displayDefaultData() {
@@ -60,7 +62,12 @@ class MovieDetailsViewController: UIViewController {
         imgBackground.kf.setImage(with: movie.posterURL, options: [.processor(processor)])
     }
     
-    private func bindDetailsData() {
+    private func bindRxData() {
+        viewModel.relayLoading.bind { [weak self] (isLoading) in
+            guard let self = self else { return }
+            isLoading ? self.showLoading() : self.hideLoading()
+        }.disposed(by: disposeBag)
+        
         viewModel.relayMovieDetails.bind { [weak self] (detail) in
             guard let self = self else { return }
             self.lbMovieYear.text = detail?.year
@@ -80,6 +87,7 @@ class MovieDetailsViewController: UIViewController {
             }
             self?.showErrorAlert(message: message)
         }.disposed(by: disposeBag)
+        
     }
     
     @IBAction func backAction(_ sender: Any) {
@@ -88,5 +96,20 @@ class MovieDetailsViewController: UIViewController {
     
     deinit {
         print(self.classForCoder, "Deinit")
+    }
+    
+}
+
+extension MovieDetailsViewController {
+    func showLoading() {
+        stackViewContent.isHidden = true
+        loadingIndicator.isHidden = false
+        loadingIndicator.startAnimating()
+    }
+    
+    func hideLoading() {
+        stackViewContent.isHidden = false
+        loadingIndicator.isHidden = true
+        loadingIndicator.stopAnimating()
     }
 }
