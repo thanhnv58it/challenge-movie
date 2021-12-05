@@ -17,8 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         let movie = MovieListViewController(nibName: MovieListViewController.nibName, bundle: nil)
         self.window?.rootViewController = UINavigationController(rootViewController: movie)
+        self.window?.overrideUserInterfaceStyle = .dark
         self.window?.makeKeyAndVisible()
-        
         return true
     }
     
