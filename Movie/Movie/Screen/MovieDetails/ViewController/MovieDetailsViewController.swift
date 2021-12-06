@@ -64,6 +64,18 @@ class MovieDetailsViewController: UIViewController {
         imgBackground.kf.setImage(with: movie.posterURL, options: [.processor(processor)])
     }
     
+    private func displayMovieDetails(_ movie: MovieDetails?) {
+        self.lbMovieYear.text = movie?.year ?? ""
+        self.lbCategory.text = movie?.genre
+        self.lbPlot.text = movie?.plot
+        self.lbDirector.text = movie?.director
+        self.lbWriter.text = movie?.writer
+        self.lbActor.text = movie?.actors
+        self.lbDuration.text = movie?.runtime
+        self.lbRateValue.text = movie?.imdbRating
+        self.lbVoteValue.text = movie?.imdbVotes
+    }
+    
     private func bindRxData() {
         viewModel.relayLoading.bind { [weak self] (isLoading) in
             guard let self = self else { return }
@@ -72,15 +84,7 @@ class MovieDetailsViewController: UIViewController {
         
         viewModel.relayMovieDetails.bind { [weak self] (detail) in
             guard let self = self else { return }
-            self.lbMovieYear.text = detail?.year ?? ""
-            self.lbCategory.text = detail?.genre
-            self.lbPlot.text = detail?.plot
-            self.lbDirector.text = detail?.director
-            self.lbWriter.text = detail?.writer
-            self.lbActor.text = detail?.actors
-            self.lbDuration.text = detail?.runtime
-            self.lbRateValue.text = detail?.imdbRating
-            self.lbVoteValue.text = detail?.imdbVotes
+            self.displayMovieDetails(detail)
         }.disposed(by: disposeBag)
         
         viewModel.relayError.bind { [weak self] (message) in

@@ -94,17 +94,18 @@ extension MovieListViewController: UISearchBarDelegate {
 
 extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    var movies: [MovieModel] {
+        return viewModel.relaySearchData.value
+    }
+    
     private func setupCollectionView() {
-        collectionView.register(UICollectionViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCellId")
         collectionView.register(MovieItemCollectionViewCell.nib, forCellWithReuseIdentifier: MovieItemCollectionViewCell.identifier)
         
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         
         let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        flowLayout.sectionInset.left = 16
-        flowLayout.sectionInset.right = 16
+        flowLayout.sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -112,7 +113,7 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
     }
         
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.relaySearchData.value.count
+        return movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -131,20 +132,20 @@ extension MovieListViewController: UICollectionViewDelegate, UICollectionViewDat
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieItemCollectionViewCell.identifier, for: indexPath) as! MovieItemCollectionViewCell
-        cell.displayData(movie: viewModel.relaySearchData.value[indexPath.row])
+        cell.displayData(movie: movies[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
-        guard indexPath.row == viewModel.relaySearchData.value.count - 1 else {
+        guard indexPath.row == movies.count - 1 else {
             return
         }
         viewModel.loadMoreData()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = viewModel.relaySearchData.value[indexPath.row]
+        let movie = movies[indexPath.row]
         let details = MovieDetailsViewController(nibName: MovieDetailsViewController.nibName, bundle: nil)
         details.viewModel = MovieDetailsViewModel(movie: movie)
         navigationController?.pushViewController(details, animated: true)
